@@ -49,7 +49,7 @@ void launchProg(char* randomScreensaver, int randomStaticImage, Plane plane)
 int main()
 {
     struct tm actualTime;
-    char* randomScreensaver = "termSaver1";
+    char* randomScreensaver = "";
     int randomStaticImage = 0;
     int nbAvailableImages = 4;
     Plane plane;
