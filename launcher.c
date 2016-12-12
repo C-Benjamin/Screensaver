@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "keyboard.h"
+#include "keyboard.c"
+
 typedef struct Plane Plane;
 struct Plane
 {
