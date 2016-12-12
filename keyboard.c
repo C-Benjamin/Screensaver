@@ -1,17 +1,38 @@
-#include keyboard.h
-#include <stdio.h>
-#include <stdlib.h>
+#include "keyboard.h"
+#include "conio.h"
 
-
-int getkey();
+#define UP 72
+pid_t sonPid;
+ char ch;
+ char kill = ' ';
+int main()
 {
-
-}
-
-return 0;
-void main()
-{
-    char ch;
-    ch = getchar();
-    printf("test %c"ch);
+    while (1)
+    {
+        ch = getch();
+        printf("%c",ch);
+        if (ch =='\033')
+        {
+            getch();
+            switch(getch())
+            {
+                case 'A':
+                printf(" uup");
+                break;
+                case 'B':
+                printf(" ddown");
+                break;
+                case'C':
+                printf(" rright");
+                break;
+                case'D':
+                printf(" lleft");
+                break;
+            }
+        }
+        if (ch==kill)
+        {
+            printf("kill");
+        }
+    }
 }
