@@ -8,13 +8,6 @@
 #include "display.h"
 #include "display.c"
 
-
-typedef struct Image Image;
-struct Image
-{
-    int** grid;
-};
-
 void initialiseBackground(Background *background)
 {
 
