@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
 
 typedef struct Plane Plane;
 struct Plane
@@ -88,9 +89,36 @@ void initialisePlane(Plane *plane)
 
 }
 
-void fillHistory(struct tm **actualTime, char* randomScreensaver, char* randomStaticImage, Plane plane)
+void fillHistory(struct tm *actualTime, char* randomScreensaver, char* randomStaticImage, Plane plane)
 {
+    FILE* file = NULL;
 
+    file = fopen("history.txt","a");
+
+    if (file != NULL)
+    {
+        fprintf(file,"%d/%d/%d  %d:%d:%d      ",actualTime->tm_mday,actualTime->tm_mon+1,actualTime->tm_year+1900,actualTime->tm_hour,actualTime->tm_min,actualTime->tm_sec);
+
+        if (randomScreensaver == "termSaver1")
+        {
+            fprintf(file,"Type statique ");
+            fprintf(file,"%s\n",randomStaticImage);
+        }
+        else if (randomScreensaver == "termSaver2")
+        {
+            struct winsize w;
+            ioctl(0, TIOCGWINSZ, &w);
+
+            fprintf(file,"Type dynamique  ");
+            fprintf(file,"%d x %d\n",w.ws_row,w.ws_col);
+        }
+        else if (randomScreensaver == "termSaver3")
+        {
+            fprintf(file,"Type interactif  ");
+            fprintf(file,"%d x %d\n",plane.xpos, plane.ypos);
+        }
+        fclose(file);
+    }
 }
 
 void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
@@ -106,21 +134,25 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
 
     if(child_pid == 0)
     {
-        execl(randomScreensaver,"",NULL);
-        perror("execl failure");
-        _exit(1);
-    }
-
-    else
-    {
         if (randomScreensaver == "termSaver1")
         {
-            //transmit the image to display by fifo
+            char* parameter[1] = {randomStaticImage};
+            execl("termSaver1","termSaver1",parameter[0],NULL);
         }
         else if (randomScreensaver == "termSaver3")
         {
-            //transmit the random plane placement by fifo
+            char* parameter[3] = {plane.direction,plane.xpos,plane.ypos};
+            execl("termSaver3","termSaver3",parameter[0],parameter[1],parameter[2],NULL);
         }
+        else
+        {
+            execl(randomScreensaver,"",NULL);
+        }
+        perror("execl failure");
+        _exit(1);
+    }
+    else
+    {
         execl("keyboard","",NULL);
         wait(&status);
     }
@@ -128,8 +160,9 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
 
 int main(int argc, char *argv[])
 {
+    system("clear");
     struct tm *actualTime;
-    char* randomScreensaver = "termSaver3";
+    char* randomScreensaver = "termSaver1";
     char* randomStaticImage = "city.pbm";
     int nbAvailableImages = 4;
     Plane plane;
@@ -144,7 +177,7 @@ int main(int argc, char *argv[])
         initialisePlane(&plane);
     }
     getActualTime(&actualTime);
-    fillHistory(&actualTime, randomScreensaver, randomStaticImage, plane);
+    fillHistory(actualTime, randomScreensaver, randomStaticImage, plane);
     if(argc == 2)
     {
         if(strcmp(argv[1],"-stats")==0)
