@@ -1,6 +1,7 @@
 #include "keyboard.h"
 #include "conio.h"
 
+
 #define UP 72
 pid_t sonPid;
  char ch;
@@ -17,7 +18,7 @@ int main()
             switch(getch())
             {
                 case 'A':
-                printf(" uup");
+                ;
                 break;
                 case 'B':
                 printf(" ddown");
