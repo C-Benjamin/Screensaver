@@ -5,6 +5,11 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <time.h>
+
+//#include "keyboard.h"
+//#include "keyboard.c"
+
 
 typedef struct Plane Plane;
 struct Plane
@@ -14,6 +19,7 @@ struct Plane
     int ypos;
     int planeImage[6][6];
 };
+
 
 void randomScreenChoice(char**randomScreensaver)
 {
@@ -68,6 +74,7 @@ char* randomStaticImageChoice(int nbAvailableImages)
         printf("Error in randomStaticImageChoice");
         break;
     }
+
     return staticImageChoice;
 }
 
@@ -85,13 +92,12 @@ void initialisePlane(Plane *plane)
     plane->xpos = random2;
     random3 = random3 %23;
     plane->ypos = random3;
-
 }
 
 void fillHistory(struct tm **actualTime, char* randomScreensaver, char* randomStaticImage, Plane plane)
-{
 
 }
+
 
 void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
 {
@@ -126,6 +132,8 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
     }
 }
 
+
+
 int main(int argc, char *argv[])
 {
     struct tm *actualTime;
@@ -143,8 +151,8 @@ int main(int argc, char *argv[])
     {
         initialisePlane(&plane);
     }
-    getActualTime(&actualTime);
-    fillHistory(&actualTime, randomScreensaver, randomStaticImage, plane);
+
+
     if(argc == 2)
     {
         if(strcmp(argv[1],"-stats")==0)
@@ -156,5 +164,11 @@ int main(int argc, char *argv[])
     {
         launchProg(randomScreensaver, randomStaticImage, plane);
     }
+  
+    getActualTime(&actualTime);
+    fillHistory(actualTime, randomScreensaver, randomStaticImage, plane);
+    launchProg(randomScreensaver, randomStaticImage, plane);
+
+
     return 0;
 }

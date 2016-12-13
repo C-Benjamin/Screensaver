@@ -11,6 +11,7 @@ struct Plane
 
 };
 
+
 typedef struct Pbm Pbm;
 struct Pbm
 {
@@ -18,6 +19,7 @@ struct Pbm
     int height;
     char imageName[100];
 };
+
 
 
 #endif // PBM_H_INCLUDED
