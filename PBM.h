@@ -11,16 +11,13 @@ struct Plane
 
 };
 
-typedef struct Background Background;
-struct Background
+typedef struct Pbm Pbm;
+struct Pbm
 {
-    Plane plane;
-    int height;
     int width;
-    int** grid;
-
+    int height;
+    char imageName[100];
 };
 
-void fillGridWithImage(int** &background.grid, char* imageName);
 
 #endif // PBM_H_INCLUDED
