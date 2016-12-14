@@ -79,11 +79,7 @@ void Tri2(History *history)
 ///////////////////////////////////////////////////////////////////////////////////:
 void affichage(History *history){
 
-//int in = 0;
-//int dy = 0;
-//int st = 0;
-//int nbr = 0;
-//char* tab[100][50];
+
 char* text;
 char testl[50] = "";
 FILE* file = NULL;
@@ -105,77 +101,9 @@ int n = 0;
      history->ch = n;
      history->taille = n;
      history->nbr = n;
- ////////////////////////////////////////////////
-   /*int tabidate = 0;
-    history.taille = n;
-
-    int j = 0;
-    char* temp [50];
-    printf("\n");
-    while (tabidate == 0)
-    {
-        tabidate = 1;
-        for(j = 0;j < history.taille-1;j++)
-        {
-            if(j < j+1)
-            {
-                strcpy(temp,tab[j+1]);
-                strcpy(tab[j+1],tab[j]);
-                strcpy(tab[j],temp);
-
-                 tabidate = 0;
-           }
-        }
-        history.taille--;
-    }
-    n = 0;
-    printf("\n");
-    for(n = 0;n < history.aff;n++)
-    {
-         printf("%s",tab[n]);
-    }*/
-///////////////////////////////////////////////////
- /*printf("\n");
- for(n = 0;n < history.ch;n++)
- {
-    if ((strstr(tab[n],"statique")) != NULL)
-    {
-         printf("%s",tab[n]);
-         st++;
-    }
-  }
-
-
-  for(n = 0;n < history.ch;n++)
-  {
-    if ((strstr(tab[n],"dynamique")) != NULL)
-    {
-         printf("%s",tab[n]);
-         dy++;
-    }
-  }
-  for(n = 0;n < history.ch;n++)
-  {
-    if ((strstr(tab[n],"interactif")) != NULL)
-    {
-         printf("%s",tab[n]);
-         in++;
-    }
-  }*/
-//////////////////////////////////////////////////////
-
-
-
- }
- /*printf("Stats:\n");
- printf("Nombre d'historique: %d\n",nbr);
- printf("Type statique : %d\n",st);
- printf("Type dynamique : %d\n",dy);
- printf("Type interactif : %d\n",in);
-fclose(file);*/
-
+ 
 }
-
+//////////////////////////////////////////////////////////////////
 void Stat(History *history)
 {
 int st=0;
