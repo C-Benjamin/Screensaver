@@ -74,6 +74,7 @@ void Tri2(History history)
 */
 
 void affichage(History history){
+    int TRI = 2 // Variable de test
 char* tab[100][50];
 char* text;
 char testl[50] = "";
@@ -97,6 +98,7 @@ int n = 0;
      history.taille = n;
 
  ////////////////////////////////////////////////
+   if (TRI = 1){     
    int tabidate = 0;
     history.taille = n;
 
@@ -124,11 +126,14 @@ int n = 0;
     for(n = 0;n < history.aff;n++)
     {
          printf("%s",tab[n]);
+  
     }
+  } 
 ///////////////////////////////////////////////////
- printf("\n");
- for(n = 0;n < history.ch;n++)
- {
+else if (TRI = 2){
+  printf("\n");
+  for(n = 0;n < history.ch;n++)
+  {
     if ((strstr(tab[n],"statique")) != NULL)
     {
          printf("%s",tab[n]);
@@ -148,6 +153,7 @@ int n = 0;
          printf("%s",tab[n]);
     }
   }
+}
 //////////////////////////////////////////////////////
 
 
@@ -161,6 +167,7 @@ fclose(file);
 
 void main()
 {
+    
     History history;
     affichage(history);
     int choix = 0;
