@@ -6,27 +6,28 @@
 #include <unistd.h>
 #include <string.h>
 
-#define CTRLS 100
+#define MAX_CTRLS 80
 
-void createPipe()
+int send(char val[1])
 {
-    mkfifo("tmp/FIFOSCRN", S_IFIFO|0666);
-}
-int send()
-{
-    char cmd[CTRLS];
+    int create;
+    create = mkfifo("/tmp/ctrl", 0666);
+    char line[MAX_CTRLS];
     int pipe;
-    pipe = open("tmp/FIFOSCRN", O_WRONLY);
-    write(pipe, cmd, strlen(cmd));
+    pipe = open("/tmp/ctrl", O_WRONLY);
+    printf("Entrer message ");
+    fgets(line, MAX_CTRLS, stdin);
+    write(pipe, line, MAX_CTRLS);
     close(pipe);
     return 0;
 }
-int receive()
+int receive(char val[2])
 {
-    char cmd[CTRLS];
+    char line[MAX_CTRLS];
     int pipe;
-    pipe = open("tmp/FIFOSCRN", O_RDONLY);
-    read(pipe, cmd, strlen(cmd));
+    pipe = open("/tmp/ctrl", O_RDONLY);
+    read(pipe, line, MAX_CTRLS);
+    printf("%s",line);
     close(pipe);
     return 0;
 }
