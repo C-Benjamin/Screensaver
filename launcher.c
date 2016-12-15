@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <dirent.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -16,26 +17,28 @@ struct Plane
     int planeImage[6][6];
 };
 
-void randomScreenChoice(char**randomScreensaver)
+char* randomScreenChoice(char* randomScreensaver)
 {
-    srand(time(NULL));
-    int random = rand();
-    random = random %3;
+    int random = randomChoice(0, 2);
+    //printf("%d",random);
+    //srand(time(NULL));
+    //random = rand()%2;
     switch(random)
     {
     case 0:
-        *randomScreensaver = "termSaver1";
+        randomScreensaver = "termSaver1";
         break;
     case 1:
-        *randomScreensaver = "termSaver2";
-        break;
+        randomScreensaver = "termSaver2";
+        break;/*
     case 2:
         *randomScreensaver = "termSaver3";
-        break;
+        break;*/
     default:
         printf("Error in randomScreenChoice");
         break;
     }
+    return randomScreensaver;
 }
 
 void getActualTime(struct tm **actualTime)
@@ -45,31 +48,46 @@ void getActualTime(struct tm **actualTime)
     *actualTime = localtime(&seconds);
 }
 
-char* randomStaticImageChoice(int nbAvailableImages)
+int randomChoice(int min, int max)             // Random permettant de choisir un programme aléatoirement
 {
-    char* staticImageChoice;
+    int random1;
     srand(time(NULL));
-    int random = rand();
-    random = random %nbAvailableImages;
-    switch(random)
+    random1 = rand()%(max - min) + min;
+    return random1;
+}
+
+char* randomStaticImageChoice()
+{
+    char pbm_repertory[1024];
+    char* str = getenv("EXIASAVER1_PBM");
+    if(str != NULL)
     {
-    case 0:
-        staticImageChoice = "city.pbm";
-        break;
-    case 1:
-        staticImageChoice = "island.pbm";
-        break;
-    case 2:
-        staticImageChoice = "tree.pbm";
-        break;
-    case 3:
-        staticImageChoice = "STP.pbm";
-        break;
-    default:
-        printf("Error in randomStaticImageChoice");
-        break;
+        strcpy(pbm_repertory, str);
     }
-    return staticImageChoice;
+    else
+    {
+        getcwd(pbm_repertory, 1024);
+    }
+    DIR* rep = opendir(pbm_repertory);
+    if(rep != NULL)
+    {
+        struct dirent * ent;
+        int compteur = 0;
+        while((ent = readdir(rep)) != NULL)
+        {
+            if(strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) compteur ++;
+        }
+        int random_nbr = randomChoice(1, compteur+1);
+        rewinddir(rep);
+        compteur = 0;
+        while(compteur != random_nbr && (ent = readdir(rep)) != NULL)
+        {
+            if(strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) compteur ++;
+
+        }
+        closedir(rep);
+        return ent->d_name;
+    }
 }
 
 void initialisePlane(Plane *plane)
@@ -126,6 +144,10 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
     pid_t child_pid;
     int status;
 
+    char path[1024];
+    char* str = getenv("EXIASAVER_HOME");
+
+
     if((child_pid = fork()) < 0 )
     {
         perror("fork failure");
@@ -136,17 +158,20 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
     {
         if (randomScreensaver == "termSaver1")
         {
-            char* parameter[1] = {randomStaticImage};
-            execl("termSaver1","termSaver1",parameter[0],NULL);
-        }
+            if(str != NULL) strcpy(path, str);
+            else getcwd(path, 1024);
+            strcat(path, "termSaver1");
+            char* arguments[] = {"termSaver1", randomStaticImage, NULL};
+            execv(path, arguments);
+        }/*
         else if (randomScreensaver == "termSaver3")
         {
-            char* parameter[3] = {plane.direction,plane.xpos,plane.ypos};
-            execl("termSaver3","termSaver3",parameter[0],parameter[1],parameter[2],NULL);
-        }
+            char* arguments[] = {plane.direction,plane.xpos,plane.ypos};
+            execv(path,arguments);
+        }*/
         else
         {
-            execl(randomScreensaver,"",NULL);
+            execl("termSaver2","",NULL);
         }
         perror("execl failure");
         _exit(1);
@@ -164,25 +189,31 @@ int main(int argc, char *argv[])
     struct tm *actualTime;
     char* randomScreensaver = "termSaver1";
     char* randomStaticImage = "city.pbm";
-    int nbAvailableImages = 4;
     Plane plane;
 
-    randomScreenChoice(&randomScreensaver);
+    randomScreensaver = randomScreenChoice(randomScreensaver);
     if (randomScreensaver == "termSaver1")
     {
-        randomStaticImage = randomStaticImageChoice(nbAvailableImages);
-    }
+        randomStaticImage = randomStaticImageChoice();
+        printf("%s",randomStaticImage);
+    }/*
     else if (randomScreensaver == "termSaver3")
     {
         initialisePlane(&plane);
-    }
+    }*/
     getActualTime(&actualTime);
     fillHistory(actualTime, randomScreensaver, randomStaticImage, plane);
     if(argc == 2)
     {
         if(strcmp(argv[1],"-stats")==0)
         {
-            execl("history","",NULL);
+            char path[1024];
+            char* str = getenv("EXIASAVER_HOME");
+            if(str != NULL) strcpy(path, str);
+            else getcwd(path, 1024);
+            strcat(path, "history");
+            char* arguments[] = {"history",NULL};
+            execv(path, arguments);
         }
     }
     else
