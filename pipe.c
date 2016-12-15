@@ -10,9 +10,9 @@
 
 void createPipe()
 {
-    mkfifo("tmp/FIFOSCRN", S_IFIFO|0666);
+    mkfifo("tmp/FIFOSCRN", S_IFIFO|0666); //Création du pipe
 }
-int send()
+int send()//Fonction qui envoie au pipe
 {
     char cmd[CTRLS];
     int pipe;
@@ -21,7 +21,7 @@ int send()
     close(pipe);
     return 0;
 }
-int receive()
+int receive()//Fonction qui permt au pipe de recevoir les donnée envoyées par la fonction send()
 {
     char cmd[CTRLS];
     int pipe;
