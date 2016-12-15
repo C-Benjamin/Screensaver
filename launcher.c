@@ -3,12 +3,10 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <dirent.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <time.h>
-
-//#include "keyboard.h"
-//#include "keyboard.c"
+#include <sys/ioctl.h>
 
 
 typedef struct Plane Plane;
@@ -20,27 +18,28 @@ struct Plane
     int planeImage[6][6];
 };
 
-
-void randomScreenChoice(char**randomScreensaver)
+char* randomScreenChoice(char* randomScreensaver)
 {
-    srand(time(NULL));
-    int random = rand();
-    random = random %3;
+    int random = randomChoice(0, 2);
+    //printf("%d",random);
+    //srand(time(NULL));
+    //random = rand()%2;
     switch(random)
     {
     case 0:
-        *randomScreensaver = "termSaver1";
+        randomScreensaver = "termSaver1";
         break;
     case 1:
-        *randomScreensaver = "termSaver2";
-        break;
+        randomScreensaver = "termSaver2";
+        break;/*
     case 2:
         *randomScreensaver = "termSaver3";
-        break;
+        break;*/
     default:
         printf("Error in randomScreenChoice");
         break;
     }
+    return randomScreensaver;
 }
 
 void getActualTime(struct tm **actualTime)
@@ -50,32 +49,46 @@ void getActualTime(struct tm **actualTime)
     *actualTime = localtime(&seconds);
 }
 
-char* randomStaticImageChoice(int nbAvailableImages)
+int randomChoice(int min, int max)             // Random permettant de choisir un programme aléatoirement
 {
-    char* staticImageChoice;
+    int random1;
     srand(time(NULL));
-    int random = rand();
-    random = random %nbAvailableImages;
-    switch(random)
-    {
-    case 0:
-        staticImageChoice = "city.pbm";
-        break;
-    case 1:
-        staticImageChoice = "island.pbm";
-        break;
-    case 2:
-        staticImageChoice = "tree.pbm";
-        break;
-    case 3:
-        staticImageChoice = "STP.pbm";
-        break;
-    default:
-        printf("Error in randomStaticImageChoice");
-        break;
-    }
+    random1 = rand()%(max - min) + min;
+    return random1;
+}
 
-    return staticImageChoice;
+char* randomStaticImageChoice()
+{
+    char pbm_repertory[1024];
+    char* str = getenv("EXIASAVER1_PBM");
+    if(str != NULL)
+    {
+        strcpy(pbm_repertory, str);
+    }
+    else
+    {
+        getcwd(pbm_repertory, 1024);
+    }
+    DIR* rep = opendir(pbm_repertory);
+    if(rep != NULL)
+    {
+        struct dirent * ent;
+        int compteur = 0;
+        while((ent = readdir(rep)) != NULL)
+        {
+            if(strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) compteur ++;
+        }
+        int random_nbr = randomChoice(1, compteur+1);
+        rewinddir(rep);
+        compteur = 0;
+        while(compteur != random_nbr && (ent = readdir(rep)) != NULL)
+        {
+            if(strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) compteur ++;
+
+        }
+        closedir(rep);
+        return ent->d_name;
+    }
 }
 
 void initialisePlane(Plane *plane)
@@ -94,15 +107,45 @@ void initialisePlane(Plane *plane)
     plane->ypos = random3;
 }
 
-void fillHistory(struct tm **actualTime, char* randomScreensaver, char* randomStaticImage, Plane plane)
+void fillHistory(struct tm *actualTime, char* randomScreensaver, char* randomStaticImage, Plane plane)
+{
+    FILE* file = NULL;
 
+    file = fopen("history.txt","a");
+
+    if (file != NULL)
+    {
+        fprintf(file,"%d/%d/%d  %d:%d:%d      ",actualTime->tm_mday,actualTime->tm_mon+1,actualTime->tm_year+1900,actualTime->tm_hour,actualTime->tm_min,actualTime->tm_sec);
+
+        if (randomScreensaver == "termSaver1")
+        {
+            fprintf(file,"Type statique ");
+            fprintf(file,"%s\n",randomStaticImage);
+        }
+        else if (randomScreensaver == "termSaver2")
+        {
+            struct winsize w;
+            ioctl(0, TIOCGWINSZ, &w);
+
+            fprintf(file,"Type dynamique  ");
+            fprintf(file,"%d x %d\n",w.ws_row,w.ws_col);
+        }
+        else if (randomScreensaver == "termSaver3")
+        {
+            fprintf(file,"Type interactif  ");
+            fprintf(file,"%d x %d\n",plane.xpos, plane.ypos);
+        }
+        fclose(file);
+    }
 }
-
 
 void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
 {
     pid_t child_pid;
     int status;
+
+    char path[1024];
+    char* str = getenv("EXIASAVER_HOME");
 
     if((child_pid = fork()) < 0 )
     {
@@ -112,63 +155,72 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
 
     if(child_pid == 0)
     {
-        execl(randomScreensaver,"",NULL);
+        if (randomScreensaver == "termSaver1")
+        {
+            if(str != NULL) strcpy(path, str);
+            else getcwd(path, 1024);
+            strcat(path, "termSaver1");
+            char* arguments[] = {"termSaver1", randomStaticImage, NULL};
+            execv(path, arguments);
+        }/*
+        else if (randomScreensaver == "termSaver3")
+        {
+            char* arguments[] = {plane.direction,plane.xpos,plane.ypos};
+            execv(path,arguments);
+        }*/
+        else
+        {
+            execl("termSaver2","",NULL);
+        }
         perror("execl failure");
         _exit(1);
     }
-
     else
     {
-        if (randomScreensaver == "termSaver1")
-        {
-            //transmit the image to display by fifo
-        }
-        else if (randomScreensaver == "termSaver3")
-        {
-            //transmit the random plane placement by fifo
-        }
         execl("keyboard","",NULL);
         wait(&status);
     }
 }
 
 
-
 int main(int argc, char *argv[])
 {
+    system("clear");
     struct tm *actualTime;
-    char* randomScreensaver = "termSaver3";
+    char* randomScreensaver = "termSaver1";
     char* randomStaticImage = "city.pbm";
-    int nbAvailableImages = 4;
+
     Plane plane;
 
-    randomScreenChoice(&randomScreensaver);
+    randomScreensaver = randomScreenChoice(randomScreensaver);
     if (randomScreensaver == "termSaver1")
     {
-        randomStaticImage = randomStaticImageChoice(nbAvailableImages);
-    }
+        randomStaticImage = randomStaticImageChoice();
+        printf("%s",randomStaticImage);
+    }/*
     else if (randomScreensaver == "termSaver3")
     {
         initialisePlane(&plane);
-    }
-
-
+    }*/
+    getActualTime(&actualTime);
+    fillHistory(actualTime, randomScreensaver, randomStaticImage, plane);
     if(argc == 2)
     {
         if(strcmp(argv[1],"-stats")==0)
         {
-            execl("history","",NULL);
+            char path[1024];
+            char* str = getenv("EXIASAVER_HOME");
+            if(str != NULL) strcpy(path, str);
+            else getcwd(path, 1024);
+            strcat(path, "history");
+            char* arguments[] = {"history",NULL};
+            execv(path, arguments);
         }
     }
     else
     {
         launchProg(randomScreensaver, randomStaticImage, plane);
     }
-  
-    getActualTime(&actualTime);
-    fillHistory(actualTime, randomScreensaver, randomStaticImage, plane);
-    launchProg(randomScreensaver, randomStaticImage, plane);
-
 
     return 0;
 }

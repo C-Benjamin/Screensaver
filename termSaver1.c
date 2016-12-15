@@ -3,18 +3,14 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-//#include "keyboard.h"
-//#include "keyboard.c"
 #include "PBM.h"
-//#include "PBM.c"
-//#include "display.h"
-//#include "display.c"
+#include "conio.h"
 
-void putImageInTable(char *file, Pbm* image, int imageTable[80][24])
+
+void putImageInTable(FILE *file, Pbm* image, int imageTable[80][24])
 {
     char lineRead[71] = "";
     int caseValue;
-
     fgets(lineRead, 71, file);
 
     while (fgets(lineRead, 71, file) != NULL)
@@ -30,13 +26,14 @@ void putImageInTable(char *file, Pbm* image, int imageTable[80][24])
     }
 }
 
-void getImageScale(char *file, Pbm* p)
+void getImageScale(FILE *file, Pbm* p)
 {
-    char lineRead[71] = "";
+    char lineRead[30] = "";
 
     for(int i = 0; i < 2; i++)
     {
-        fgets(lineRead, 71, file);
+        fgets(lineRead, 30, file);
+
     }
     fscanf(file, "%d %d", &p->width, &p->height);
 }
@@ -45,7 +42,7 @@ void displayImageTable(int imageTable[80][24])
 {
 	char c[] = {226, 150, 136, 0};
 
-    for (int i = 0 ;i < 24; i++)
+    for (int i = 0 ;i < 22; i++)
     {
         for (int j = 0;j < 80; j++)
         {
@@ -63,13 +60,34 @@ void displayImageTable(int imageTable[80][24])
     printf("\n");
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    /*if(argc != 2)
+    {
+        printf("Invalid arguments\n");
+        return -1;
+    }*/
+
     Pbm image;
     int imageTable[80][24] = {0};
+    char* arguments = argv[1];
+    printf("%s+",arguments);
+    strcpy(image.imageName, arguments);
 
     FILE* file = NULL;
-    strcpy(image.imageName, "tree.pbm");
+
+    char path[1024];
+    char* str = getenv("EXIASAVER1_PBM");
+    if(str != NULL) strcpy(path, str);
+    else getcwd(path, 1024);
+    printf("Path:%s\n",path);
+    strcat(path,image.imageName);
+
+    //strcpy(image.imageName, "tree.bpm");
+    //printf("%s",argv[1]);
+    //strcpy(image.imageName, "city.pbm");
+    printf("Imgname:%s\n",image.imageName);
+
     file = fopen(image.imageName, "r");
     if(file != NULL)
     {
@@ -78,7 +96,15 @@ int main()
         fclose(file);
     }
     displayImageTable(imageTable);
-
+    while(1){
+        char ch;
+        char kill = ' ';
+        ch = getch();
+        if(ch==kill)
+        {
+            exit(1);
+        }
+    }
     return 0;
 }
 
