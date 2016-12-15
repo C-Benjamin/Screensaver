@@ -19,11 +19,20 @@ void send(char ch2[MAX_CTRLS])
 }
 int receive()
 {
-    char ch2[MAX_CTRLS];
-    int pipe1;
-    pipe1 = open("/tmp/ctrl", O_RDONLY);
-    read(pipe1, ch2, MAX_CTRLS);
-    close(pipe1);
-    
-    return ch2;
+   int pipe1;
+   pipe1 = open("/tmp/ctrl", O_RDONLY);
+while(1)
+{
+   char ch2[MAX_CTRLS];
+   int reader;
+   reader = read(pipe1, ch2, MAX_CTRLS);
+   if (reader!=-1)
+	{
+	   printf("%s",ch2);
+	   memset(ch2, 0, MAX_CTRLS);
+	}
 }
+	close(pipe1);
+	return 0;
+}
+

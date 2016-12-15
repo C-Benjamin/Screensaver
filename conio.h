@@ -5,7 +5,7 @@
 #ifndef CONIO_H_INCLUDED
 #define CONIO_H_INCLUDED
 
-int getch(void)
+int getch(void) //definition de la fontion getch
 {
     struct termios oldattr, newattr;
     int ch;
