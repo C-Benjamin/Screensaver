@@ -11,7 +11,7 @@
 //#include "display.h"
 //#include "display.c"
 
-void putImageInTable(char *file, Pbm* image, int imageTable[80][24])
+void putImageInTable(char *file, Pbm* image, int imageTable[80][24]) // Transfère l'image dans le tableau
 {
     char lineRead[71] = "";
     int caseValue;
@@ -32,7 +32,7 @@ void putImageInTable(char *file, Pbm* image, int imageTable[80][24])
     }
 }
 
-void getImageScale(char *file, Pbm* p)
+void getImageScale(char *file, Pbm* p) // Récupère la taille de l'image
 {
     char lineRead[20] = "";
 
@@ -43,7 +43,7 @@ void getImageScale(char *file, Pbm* p)
     fscanf(file, "%d %d", &p->width, &p->height);
 }
 
-void displayImageTable(int imageTable[80][24])
+void displayImageTable(int imageTable[80][24]) // AfFiche le tableau dans l'espace donné
 {
 	char c[] = {226, 150, 136, 0};
 
@@ -57,7 +57,7 @@ void displayImageTable(int imageTable[80][24])
             }
             else
             {
-                printf("%s", c);
+                printf("%s", c); // Affiche la case si imageTable n'est pas nul
             }
         }
         printf("\n");
@@ -65,7 +65,7 @@ void displayImageTable(int imageTable[80][24])
     printf("\n");
 }
 
-Pbm manipulationFile(char* arguments)
+Pbm manipulationFile(char* arguments) 
 {
     Pbm image;
     strcpy(image.imageName, arguments);
@@ -113,22 +113,22 @@ int main(int argc, char *argv[])
     image = manipulationFile(arguments);
     //printf("%s",argv[1]);
     strcpy(image.imageName, "city.pbm");
-    file = fopen(image.imageName, "r");
+    file = fopen(image.imageName, "r"); // Ouvre le dossier ou se situe l'image
     if(file != NULL)
     {
-
+// Initialise les paramètre
         getImageScale(file, &image);
         putImageInTable(file, &image, imageTable);
         fclose(file);
     }
-    displayImageTable(imageTable);
+    displayImageTable(imageTable); // L'affiche ensuite
     while(1){
         char ch;
         char kill = ' ';
         ch = getch();
         if(ch==kill)
         {
-            exit(1);
+            exit(1); // Permet de tuer le programme si la barre espace est pressée
         }
     }
     return 0;
