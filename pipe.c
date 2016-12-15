@@ -6,27 +6,32 @@
 #include <unistd.h>
 #include <string.h>
 
-#define CTRLS 100
-
-void createPipe()
+#define MAX_CTRLS 2
+    
+void send(char ch2[MAX_CTRLS])// Fonction qui envoye des information au pipe
 {
-    mkfifo("tmp/FIFOSCRN", S_IFIFO|0666); //Création du pipe
+    int create;
+    create = mkfifo("/tmp/ctrl", 0666);
+    int pipe1;
+    pipe1 = open("/tmp/ctrl", O_WRONLY);
+    write(pipe1, ch2, MAX_CTRLS);
+    close(pipe1);
 }
-int send()//Fonction qui envoie au pipe
+int receive()// Fonction qui reçoit les information de la fonction send() pour le pipe
 {
-    char cmd[CTRLS];
-    int pipe;
-    pipe = open("tmp/FIFOSCRN", O_WRONLY);
-    write(pipe, cmd, strlen(cmd));
-    close(pipe);
-    return 0;
+   int pipe1;
+   pipe1 = open("/tmp/ctrl", O_RDONLY);
+while(1)
+{
+   char ch2[MAX_CTRLS];
+   int reader;
+   reader = read(pipe1, ch2, MAX_CTRLS);
+   if (reader!=-1)
+	{
+	   printf("%s",ch2);
+	   memset(ch2, 0, MAX_CTRLS);
+	}
 }
-int receive()//Fonction qui permt au pipe de recevoir les donnée envoyées par la fonction send()
-{
-    char cmd[CTRLS];
-    int pipe;
-    pipe = open("tmp/FIFOSCRN", O_RDONLY);
-    read(pipe, cmd, strlen(cmd));
-    close(pipe);
-    return 0;
+	close(pipe1);
+	return 0;
 }
