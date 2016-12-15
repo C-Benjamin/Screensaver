@@ -78,6 +78,7 @@ int main()
         fclose(file);
     }
     displayImageTable(imageTable);
+
     return 0;
 }
 
