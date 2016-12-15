@@ -8,7 +8,7 @@
 
 #define MAX_CTRLS 2
     
-void send(char ch2[MAX_CTRLS])
+void send(char ch2[MAX_CTRLS])// Fonction qui envoye des information au pipe
 {
     int create;
     create = mkfifo("/tmp/ctrl", 0666);
@@ -17,7 +17,7 @@ void send(char ch2[MAX_CTRLS])
     write(pipe1, ch2, MAX_CTRLS);
     close(pipe1);
 }
-int receive()
+int receive()// Fonction qui reçoit les information de la fonction send() pour le pipe
 {
    int pipe1;
    pipe1 = open("/tmp/ctrl", O_RDONLY);
