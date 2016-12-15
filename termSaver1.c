@@ -33,6 +33,7 @@ void getImageScale(FILE *file, Pbm* p)
     for(int i = 0; i < 2; i++)
     {
         fgets(lineRead, 30, file);
+
     }
     fscanf(file, "%d %d", &p->width, &p->height);
 }
@@ -86,6 +87,7 @@ int main(int argc, char *argv[])
     //printf("%s",argv[1]);
     //strcpy(image.imageName, "city.pbm");
     printf("Imgname:%s\n",image.imageName);
+
     file = fopen(image.imageName, "r");
     if(file != NULL)
     {

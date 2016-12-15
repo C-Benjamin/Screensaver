@@ -1,10 +1,7 @@
 #ifndef PIPE_H_INCLUDED
 #define PIPE_H_INCLUDED
 
-void createPipe();
 int receive();
-int send();
-
-
+void send();
 
 #endif // PIPE_H_INCLUDED

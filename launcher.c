@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 
+
 typedef struct Plane Plane;
 struct Plane
 {
@@ -104,7 +105,6 @@ void initialisePlane(Plane *plane)
     plane->xpos = random2;
     random3 = random3 %23;
     plane->ypos = random3;
-
 }
 
 void fillHistory(struct tm *actualTime, char* randomScreensaver, char* randomStaticImage, Plane plane)
@@ -147,7 +147,6 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
     char path[1024];
     char* str = getenv("EXIASAVER_HOME");
 
-
     if((child_pid = fork()) < 0 )
     {
         perror("fork failure");
@@ -183,12 +182,14 @@ void launchProg(char* randomScreensaver, char* randomStaticImage, Plane plane)
     }
 }
 
+
 int main(int argc, char *argv[])
 {
     system("clear");
     struct tm *actualTime;
     char* randomScreensaver = "termSaver1";
     char* randomStaticImage = "city.pbm";
+
     Plane plane;
 
     randomScreensaver = randomScreenChoice(randomScreensaver);
@@ -220,5 +221,6 @@ int main(int argc, char *argv[])
     {
         launchProg(randomScreensaver, randomStaticImage, plane);
     }
+
     return 0;
 }

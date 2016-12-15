@@ -5,7 +5,7 @@
 #ifndef CONIO_H_INCLUDED
 #define CONIO_H_INCLUDED
 
-int getch(void)
+int getch(void)// Définition de la fonction getch()
 {
     struct termios oldattr, newattr;
     int ch;

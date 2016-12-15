@@ -1,38 +1,38 @@
-#include "keyboard.h"
 #include "conio.h"
+#include "pipe.h"
+#include "pipe.c"
+#define MAX_CTRLS 2
 
-#define UP 72
-pid_t sonPid;
+ char ch2[MAX_CTRLS];
  char ch;
- char kill = ' ';
 int main()
 {
     while (1)
     {
+
         ch = getch();
-        printf("%c",ch);
-        if (ch =='\033')
+        if (ch =='\033')// l'information que renvoie les flèche est tout d'abord \033 puis [ et enfin une information uniques pour chaque flèche comme A pour la flèche du haut
         {
             getch();
             switch(getch())
             {
-                case 'A':
-                printf(" uup");
+                case 'A': // Cas de la flèche haut
+                ch2[0] = 'a';
+                send(ch2);// Envoie l'information grâce au pipe
                 break;
-                case 'B':
-                printf(" ddown");
+                case 'B':// Cas de la flèche bas
+                ch2[0] = 'b';
+                send(ch2);
                 break;
-                case'C':
-                printf(" rright");
+                case'C':// Cas de la flèche gauche
+                ch2[0] = 'c';
+                send(ch2);
                 break;
-                case'D':
-                printf(" lleft");
+                case'D':// Cas de la flèche droite
+                ch2[0] = 'd';
+                send(ch2);
                 break;
             }
-        }
-        if (ch==kill)
-        {
-            printf("kill");
         }
     }
 }
