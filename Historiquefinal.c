@@ -99,6 +99,7 @@ int n = 0; // Variable importante qui permettra de déterminer le nombre de lign
      history->size = n;
      history->nbr = n;
  
+ }
 }
 ////////////////////////////////////////////////////////////////
 void Stat(History *history)// Permettra de calculer des stats en récupérant des informaton grâce à d'autre fonction ou les calculant dans cette même fonction
