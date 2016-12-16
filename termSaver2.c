@@ -11,11 +11,6 @@ struct Pbm
 
 };
 
-void fillImageTable(FILE* file, int imageTable)
-{
-
-}
-
 void placeNumbersInHourTable(int imageTable[80][24])
 {
     time_t seconds;
