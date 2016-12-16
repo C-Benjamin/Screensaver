@@ -9,12 +9,12 @@ struct History // Cette structure permet de récuperer des information de la pre
     int screenlaunched;
     int  ch;
     int  aff;
-    int taille;
+    int size;
     char * tab[100][50];
     int  nbr;
 };
-
-void Tri1(History *history)// Fontion qui permet le tri de la date la plus ancienne à la date la plus recent
+//////////////////////////////////////////////////////////////////
+void Sort1(History *history)// Fontion qui permet le tri de la date la plus ancienne à la date la plus recent
 {
     int tabidate = 0;
 
@@ -25,7 +25,7 @@ void Tri1(History *history)// Fontion qui permet le tri de la date la plus ancie
     while (tabidate == 0)
     {
         tabidate = 1;
-        for(j = 0;j < history->taille-1;j++)
+        for(j = 0;j < history->size-1;j++)
         {
             if(j < j+1)
             {   // Permet l'inversion des termes du tableau lorsque le teste est réeussi
@@ -36,7 +36,7 @@ void Tri1(History *history)// Fontion qui permet le tri de la date la plus ancie
                  tabidate = 0;
            }
         }
-        history->taille--; //Récuperation de la taille grâce à la variable de la première fonction
+        history->size--; //Récuperation de la taille grâce à la variable de la première fonction
     }
     int n;
     printf("\n");
@@ -45,8 +45,8 @@ void Tri1(History *history)// Fontion qui permet le tri de la date la plus ancie
          printf("%s",history->tab[n]); // Affiche le nouvelle ordre 
     }
 }
-
-void Tri2(History *history)// Permet un tri par type
+///////////////////////////////////////////////////////////////////
+void Sort2(History *history)// Permet un tri par type
 {
     int n;
      printf("\n");
@@ -73,11 +73,12 @@ void Tri2(History *history)// Permet un tri par type
   }
 }
 
-void affichage(History *history){
+///////////////////////////////////////////////////////////////////
+void display(History *history){
 //Lis le fichier .txt et récupère l'historique en l'enregistrant dans un tableau
 
 char* text;
-char testl[50] = "";
+char tabsl[50] = "";
 FILE* file = NULL;
 file = fopen("test.txt","r");
 int c;
@@ -88,18 +89,18 @@ int n = 0; // Variable importante qui permettra de déterminer le nombre de lign
       while ((c=fgetc(file)) != EOF)
       {
 
-        text = fgets(testl,50,file);
+        text = fgets(tabsl,50,file);
         strcpy(history->tab[n],text);// Transfert la chaine de charactère du .txt dans le tableau
         printf("%s",history->tab[n]);
         n++;
      }
      history->aff = n;
      history->ch = n;        // On récupère la variable n qui a alors le nombre max de ligne et transfert sa valeur à d'autre variable pour les autres fonction
-     history->taille = n;
+     history->size = n;
      history->nbr = n;
  
 }
-
+////////////////////////////////////////////////////////////////
 void Stat(History *history)// Permettra de calculer des stats en récupérant des informaton grâce à d'autre fonction ou les calculant dans cette même fonction
 {
 int st=0;
@@ -143,8 +144,8 @@ int in=0;
 void main()
 {
     History history;
-    affichage(&history);// Affiche l'historique
-    int choix = 0;
+    display(&history);// Affiche l'historique
+    int choice = 0;
 
     printf("\n");
     printf("Tapez 1 pour un tri décroissant\n"
@@ -152,22 +153,22 @@ void main()
             "Tapez 3 pour afficher les stats de l'historique\n");
 
 
-    scanf("Choix : %d",&choix);
+    scanf("%d",&choice);
     system("clear");
 
-    if (choix == 1)
+    if (choice == 1)
     {
-        Tri1(&history);
+        Sort1(&history);
         printf("\nFait");
     }
 
-    else if (choix == 2)
+    else if (choice == 2)
     {
-        Tri2(&history);
+        Sort2(&history);
         printf("\nFait");
     }
 
-    else if (choix == 3)
+    else if (choice == 3)
     {
        Stat(&history);
     }
