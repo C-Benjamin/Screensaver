@@ -13,7 +13,7 @@ struct History // Cette structure permet de récuperer des information de la pre
     char * tab[100][50];
     int  nbr;
 };
-//////////////////////////////////////////////////////////////////
+
 void Tri1(History *history)// Fontion qui permet le tri de la date la plus ancienne à la date la plus recent
 {
     int tabidate = 0;
@@ -45,7 +45,7 @@ void Tri1(History *history)// Fontion qui permet le tri de la date la plus ancie
          printf("%s",history->tab[n]); // Affiche le nouvelle ordre 
     }
 }
-///////////////////////////////////////////////////////////////////
+
 void Tri2(History *history)// Permet un tri par type
 {
     int n;
@@ -73,7 +73,6 @@ void Tri2(History *history)// Permet un tri par type
   }
 }
 
-///////////////////////////////////////////////////////////////////
 void affichage(History *history){
 //Lis le fichier .txt et récupère l'historique en l'enregistrant dans un tableau
 
@@ -100,7 +99,7 @@ int n = 0; // Variable importante qui permettra de déterminer le nombre de lign
      history->nbr = n;
  
 }
-////////////////////////////////////////////////////////////////
+
 void Stat(History *history)// Permettra de calculer des stats en récupérant des informaton grâce à d'autre fonction ou les calculant dans cette même fonction
 {
 int st=0;
