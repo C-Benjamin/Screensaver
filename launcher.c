@@ -21,9 +21,6 @@ struct Plane
 char* randomScreenChoice(char* randomScreensaver)
 {
     int random = randomChoice(0, 2);
-    //printf("%d",random);
-    //srand(time(NULL));
-    //random = rand()%2;
     switch(random)
     {
     case 0:
@@ -49,7 +46,7 @@ void getActualTime(struct tm **actualTime)
     *actualTime = localtime(&seconds);
 }
 
-int randomChoice(int min, int max)             // Random permettant de choisir un programme aléatoirement
+int randomChoice(int min, int max)
 {
     int random1;
     srand(time(NULL));
