@@ -35,4 +35,3 @@ while(1)
 	close(pipe1);
 	return 0;
 }
-
